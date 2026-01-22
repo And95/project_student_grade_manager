@@ -3,8 +3,11 @@ Project Student Grade Manager
 Projeto Node para ser executado localmente por API
 
 Método: POST
+
 URL: http://localhost:3000/grades
+
 Content-Type: application/json
+
 Body(example):
 {
     "studentName": "André",
@@ -15,13 +18,17 @@ Body(example):
 ----------------------------------------------
 
 Método: GET
+
 URL: http://localhost:3000/grades
 
 ----------------------------------------------
 
 Método: PUT
+
 URL: http://localhost:3000/grades/:id
+
 Content-Type: application/json
+
 Body(example):
 {
     "studentName": "André Luiz",
@@ -32,5 +39,6 @@ Body(example):
 ----------------------------------------------
 
 Método: DELETE
+
 URL: http://localhost:3000/grades/:id
 
