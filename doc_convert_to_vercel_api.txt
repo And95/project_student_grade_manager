@@ -1,0 +1,87 @@
+├─ api/
+│   └─ grades.js
+├─ package.json
+└─ vercel.json (opcional)
+
+----------------------------------------------------------------------
+
+api/grades.js (VERSÃO SERVERLESS – PRONTA)
+import { v4 as uuidv4 } from "uuid";
+
+let grades = []; // ⚠️ memória temporária (reseta a cada cold start)
+
+export default function handler(req, res) {
+  const { method, url } = req;
+
+  // GET /api/grades
+  if (method === "GET") {
+    return res.status(200).json(grades);
+  }
+
+  // POST /api/grades
+  if (method === "POST") {
+    const { studentName, subject, grade } = req.body;
+
+    if (!studentName || !subject || grade === undefined) {
+      return res.status(400).json({
+        message: "studentName, subject and grade are required",
+      });
+    }
+
+    const newGrade = {
+      id: uuidv4(),
+      studentName,
+      subject,
+      grade,
+    };
+
+    grades.push(newGrade);
+
+    return res.status(201).json(newGrade);
+  }
+
+  // PUT /api/grades?id=123
+  if (method === "PUT") {
+    const { id } = req.query;
+    const { studentName, subject, grade } = req.body;
+
+    const gradeToUpdate = grades.find((g) => g.id === id);
+
+    if (!gradeToUpdate) {
+      return res.status(404).json({ message: "Grade not found" });
+    }
+
+    gradeToUpdate.studentName = studentName ?? gradeToUpdate.studentName;
+    gradeToUpdate.subject = subject ?? gradeToUpdate.subject;
+    gradeToUpdate.grade = grade ?? gradeToUpdate.grade;
+
+    return res.status(200).json(gradeToUpdate);
+  }
+
+  // DELETE /api/grades?id=123
+  if (method === "DELETE") {
+    const { id } = req.query;
+    const index = grades.findIndex((g) => g.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ message: "Grade not found" });
+    }
+
+    grades.splice(index, 1);
+    return res.status(204).end();
+  }
+
+  return res.status(405).json({ message: "Method not allowed" });
+}
+
+----------------------------------------------------------------------
+
+package.json (AJUSTADO PARA VERCEL)
+{
+  "name": "projectstudentgrademanager",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
+}
